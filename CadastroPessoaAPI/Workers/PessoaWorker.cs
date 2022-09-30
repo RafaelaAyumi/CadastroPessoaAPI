@@ -27,7 +27,7 @@ namespace ClickToStudy.Workers
 
         public async Task ConsultarPessoa(Pessoa pessoa)
         {
-            await _pessoaRepository.Read(pessoa);
+            await _pessoaRepository.Read();
         }
     }
 }

@@ -21,5 +21,11 @@ namespace ClickToStudy.Controllers
         {
             return Ok(_pessoaWorker.CadastrarPessoa(pessoa));
         }
+
+        [HttpGet]
+        public ActionResult ConsultarPessoa(Pessoa pessoa)
+        {
+            return Ok(_pessoaWorker.ConsultarPessoa(pessoa));
+        }
     }
 }

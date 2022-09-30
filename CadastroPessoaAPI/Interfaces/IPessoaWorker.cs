@@ -10,5 +10,6 @@ namespace ClickToStudy.Interfaces
     public interface IPessoaWorker
     {
         Task CadastrarPessoa(Pessoa pessoa);
+        Task ConsultarPessoa(Pessoa pessoa);
     }
 }

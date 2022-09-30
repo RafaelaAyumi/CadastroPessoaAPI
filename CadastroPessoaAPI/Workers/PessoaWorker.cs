@@ -13,7 +13,7 @@ namespace ClickToStudy.Workers
     {
 
         private readonly IPessoaRepository _pessoaRepository;
-        
+
 
         public PessoaWorker(IPessoaRepository pessoaWorker)
         {
@@ -25,6 +25,9 @@ namespace ClickToStudy.Workers
             await _pessoaRepository.Insert(pessoa);
         }
 
-    
+        public async Task ConsultarPessoa(Pessoa pessoa)
+        {
+            await _pessoaRepository.Read(pessoa);
+        }
     }
 }

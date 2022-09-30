@@ -5,9 +5,9 @@ namespace ClickToStudy.Repository
 {
     public class PessoaRepository : IPessoaRepository
     {
-       
 
-        
+
+
         public async Task Insert(Pessoa pessoa)
         {
             var nome = pessoa.Nome + ";";
@@ -19,9 +19,14 @@ namespace ClickToStudy.Repository
 
             var linha = nome + cpf + idade + datanascimento + sexo + celular;
 
-            using (StreamWriter arquivo = new StreamWriter(@"C:\Users\rafae\Desktop\SalvarPessoaCSV\pessoa.csv", true))
+            using (StreamWriter arquivo = new StreamWriter(@"C:\Users\pc\OneDrive\Área de Trabalho\Teste\pessoa.csv", true))
                 arquivo.WriteLine(linha);
 
+        }
+
+        public async Task Read(Pessoa pessoa)
+        {
+            // Implementar método aqui - Confirmar erro de Body do GET
         }
     }
 }

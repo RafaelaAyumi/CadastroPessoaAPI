@@ -25,9 +25,9 @@ namespace ClickToStudy.Workers
             await _pessoaRepository.Insert(pessoa);
         }
 
-        public async Task ConsultarPessoa(Pessoa pessoa)
+        public async Task<Pessoa> ConsultarPessoa(Guid guid)
         {
-            await _pessoaRepository.Read();
+            return await _pessoaRepository.Read(guid);
         }
     }
 }

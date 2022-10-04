@@ -6,6 +6,6 @@ namespace ClickToStudy.Interfaces
     {
         Task Insert(Pessoa pessoa);
 
-        Task Read();
+        Task<Pessoa> Read(Guid guid);
     }
 }

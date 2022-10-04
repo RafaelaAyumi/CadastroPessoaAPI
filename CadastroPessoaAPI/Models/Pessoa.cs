@@ -9,9 +9,8 @@ namespace ClickToStudy.Models
 {
     public class Pessoa
     {
+        public string Guid { get; set; } = "";
         public string Nome { get; set; } = "";
-
-
         public int Idade { get; set; }
         public string CPF { get; set; } = "";
         public string DtNascimento { get; set; } = "01/01/1900";

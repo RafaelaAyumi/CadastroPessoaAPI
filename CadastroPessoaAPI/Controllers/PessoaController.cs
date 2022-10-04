@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ClickToStudy.Interfaces;
 using ClickToStudy.Models;
+using CadastroPessoaAPI.Models.Exceptions;
 
 namespace ClickToStudy.Controllers
 {
@@ -17,15 +18,25 @@ namespace ClickToStudy.Controllers
         }
 
         [HttpPost]
-        public ActionResult CadastrarPessoa(Pessoa pessoa)
+        public ActionResult<Task> CadastrarPessoa([FromBody]Pessoa pessoa)
         {
             return Ok(_pessoaWorker.CadastrarPessoa(pessoa));
         }
 
         [HttpGet]
-        public ActionResult ConsultarPessoa(Pessoa pessoa)
+        public async Task<ActionResult<Pessoa>> ConsultarPessoa([FromQuery]Guid guid)
         {
-            return Ok(_pessoaWorker.ConsultarPessoa(pessoa));
+            Pessoa result;
+            try
+            {
+                result = await _pessoaWorker.ConsultarPessoa(guid);
+            }
+            catch (PessoaNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+            return Ok(result);
         }
     }
 }

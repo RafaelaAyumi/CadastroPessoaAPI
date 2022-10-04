@@ -1,7 +1,9 @@
-﻿using ClickToStudy.Interfaces;
+﻿using CadastroPessoaAPI.Models.Exceptions;
+using ClickToStudy.Interfaces;
 using ClickToStudy.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing.Constraints;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ClickToStudy.Repository
 {
@@ -9,9 +11,9 @@ namespace ClickToStudy.Repository
     {
 
 
-
         public async Task Insert(Pessoa pessoa)
         {
+            var guid = Guid.NewGuid() + ";";
             var nome = pessoa.Nome + ";";
             var cpf = pessoa.CPF + ";";
             var idade = pessoa.Idade + ";";
@@ -19,32 +21,33 @@ namespace ClickToStudy.Repository
             var sexo = pessoa.Sexo + ";";
             var celular = pessoa.Celular + ";";
 
-            var linha = nome + cpf + idade + datanascimento + sexo + celular;
+            var linha = nome + cpf + idade + datanascimento + sexo + celular + guid;
 
             using (StreamWriter arquivo = new StreamWriter(@"C:\Users\pc\OneDrive\Área de Trabalho\Teste\pessoa.csv", true))
                 arquivo.WriteLine(linha);
 
         }
 
-        public async Task Read()
+        public async Task<Pessoa> Read(Guid guid)
         {
             var path = @"C:\Users\pc\OneDrive\Área de Trabalho\Teste\pessoa.csv";
             var reader = new StreamReader(File.OpenRead(path));
             var line = reader.ReadLine();
             var columns = line.Split(";");
-            (int indexNome, int indexCPF, int indexIdade, int indexDtNascimento, int indexSexo,  int indexCelular) = SetColumnsIndex(columns);
-            var pessoalista = CriarListaPessoa(reader, indexNome, indexCPF, indexIdade, indexDtNascimento, indexSexo, indexCelular);
+            (int indexNome, int indexCPF, int indexIdade, int indexDtNascimento, int indexSexo,  int indexCelular, int indexGuid) = SetColumnsIndex(columns);
+             var pessoalista = CriarListaPessoa(reader, indexNome, indexCPF, indexIdade, indexDtNascimento, indexSexo, indexCelular, indexGuid);
 
-            foreach(var pessoa in pessoalista)
+            foreach(var pessoa in pessoalista) 
             {
-                Console.WriteLine("Nome: " + pessoa.Nome +"/ CPF: " + pessoa.CPF);
+                if (pessoa.Guid == guid.ToString()) 
+                   return pessoa;
             }
-
+            throw new PessoaNotFoundException();
         }
 
 
 
-        private static (int, int, int, int, int, int) SetColumnsIndex(string [] columns)
+        private static (int, int, int, int, int, int, int) SetColumnsIndex(string [] columns)
         {
             int indexNome = -1;
             int indexCPF = -1;
@@ -52,9 +55,10 @@ namespace ClickToStudy.Repository
             int indexDtNascimento = -1;
             int indexSexo = -1;
             int indexCelular = -1;
+            int indexGuid = -1;
             for (int i =0; i < columns.Length; i++)
             {
-                if (!string.IsNullOrEmpty(columns[i]))
+                if (string.IsNullOrEmpty(columns[i]))
                     continue;
                 if (columns[i].ToLower() == "nome")
                 {
@@ -92,12 +96,18 @@ namespace ClickToStudy.Repository
 
                 }
 
+                if (columns[i].ToLower() == "guid")
+                {
+                    indexGuid = i;
+
+                }
+
             }
 
-            return (indexNome, indexCPF, indexIdade, indexDtNascimento, indexSexo,  indexCelular);
+            return (indexNome, indexCPF, indexIdade, indexDtNascimento, indexSexo,  indexCelular, indexGuid);
         }
         
-        private static List<Pessoa> CriarListaPessoa(StreamReader reader, int indexNome, int indexCPF, int indexIdade, int indexDtNascimento, int indexSexo, int indexCelular)
+        private static List<Pessoa> CriarListaPessoa(StreamReader reader, int indexNome, int indexCPF, int indexIdade, int indexDtNascimento, int indexSexo, int indexCelular, int indexGuid)
         {
             string line;
             var pessoalista=new List<Pessoa>();
@@ -123,6 +133,9 @@ namespace ClickToStudy.Repository
 
                 if (indexCPF != -1)
                     pessoa.Celular = values[indexCelular];
+
+                if (indexGuid != -1 )
+                    pessoa.Guid = values[indexGuid];
 
                 pessoalista.Add(pessoa);
             }
